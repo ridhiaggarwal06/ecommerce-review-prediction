@@ -1,37 +1,83 @@
 # Customer Review Prediction for Nile (E-commerce Case Study)
 
-Customer reviews play a critical role in shaping trust and driving sales for e-commerce platforms. For Nile, a large South American e-commerce company, identifying whether a customer is likely to leave a positive or negative review can help improve service quality, reduce negative experiences, and strengthen brand reputation. Our project aimed to develop a predictive model to forecast review outcomes and inform operational improvements, including delivery efficiency and product quality.
+#### Project Summary
+This project predicts whether a customer will leave a positive or negative product review on an eCommerce platform. The aim was to help the business target the right customers for review requests, improve online reputation, and use incentives more efficiently.
 
+The project was completed as part of a real-world analytics consulting assignment
 
-The problem:
-Nile, a leading e-commerce platform, faced the challenge of predicting whether customers would leave positive or negative reviews. With over 100,000+ order records, the company wanted to understand which factors most influenced satisfaction and how predictive modelling could improve customer experience.
+#### Business Problem
+Online reviews strongly influence customer trust and sales. However, requesting reviews from every customer is costly and ineffective.
+The business wanted to:
+* Predict which customers are likely to leave positive reviews
+* Focus review requests on high-probability customers
+* Improve overall rating quality in a cost-efficient way
 
+#### Data Used
+* Real transactional eCommerce data
+* 90,000+ orders after cleaning
+* Data from 8 linked tables including:
+  - Orders, customers, products, payments, sellers, deliveries, and reviews
+* Product categories translated into English for analysis
 
-Approach:
-- Data Preparation
-  - Integrated eight separate datasets into a single view of 91,000+ orders.
-  - Cleaned anomalies such as mismatched delivery dates and missing values.
-  - Engineered new features, including delivery time, review response time, product size, and order status categories (delivered early, delayed, cancelled, etc.).
+#### Approach:
+1. Data Cleaning & Quality Checks:
+* Joined 8 different datasets (orders, products, customers, payments, reviews, sellers, and delivery data) into one clean analysis table.
+* Removed:
+  - Orders where payment values did not match product and freight totals
+  - Delivered orders with missing delivery dates
+  - Undelivered orders that incorrectly had delivery dates
+  - Rows with missing key values
+* Retained real-world delivery delays and mismatches as they reflect actual operational issues rather than data errors.
+* After cleaning and merging, the final dataset contained ~91,600 records.
+
+2. New Features Created:
+To better capture customer experience and order behaviour, several new columns were created, including:
+* Delivery time – days from purchase to delivery
+* Review time – time taken by customers to leave a review
+* Item count – total number of products in each order
+* Product size – calculated using length, width, and height
+* Average review scores at:
+  - Product level
+  - Seller level
+  - Product category level
+* Encoded order delivery status into simple numeric groups:
+  - Cancelled/unavailable
+  - Delivered early
+  - Delivered late
+  - Shipped
+  - Processing
+These features helped capture delivery reliability, product scale, and customer experience more realistically.
+
+3. Target Variable Creation:
+Converted 1–5 star ratings into a binary outcome:
+  - 1–3 stars → Negative
+  - 4–5 stars → Positive
+Chosen due to very few neutral (3-star) reviews.
+
+4. Class Imbalance:
+The dataset was imbalanced, with far more positive reviews than negative ones.
+This was accounted for by:
+* Using evaluation metrics that work well with imbalanced data (precision, recall, and F1-score)
+* Interpreting results carefully to avoid being misled by high accuracy alone
  
-- Model Selection and Evaluation
-  - Gradient Boosting Decision Trees (GBDT) and XGBoost were chosen because they handle complex, non-linear relationships effectively and are well-suited for imbalanced datasets often seen in real-world reviews. XGBoost, in particular, was selected for its speed, scalability, and built-in regularisation, reducing the risk of overfitting.
-  - Hyperparameter tuning was applied to strike a balance between accuracy and generalisation, ensuring the model performed well not only on training data but also on unseen future orders.
-  - Precision, recall, and macro F1-score were used as evaluation metrics instead of accuracy alone. This choice ensured that both positive and negative reviews were measured fairly, even though the dataset contained far fewer negative reviews. The macro F1-score was particularly important, as it emphasises performance on minority classes that are business-critical (negative reviews).
+5. Model Selection and Evaluation:
+* Gradient Boosting Decision Trees (GBDT) and XGBoost were chosen because they work well with complex, non-linear data and handle imbalanced datasets effectively. XGBoost was especially useful due to its speed, scalability, and built-in overfitting control.
+* Hyperparameter tuning was applied to ensure the models performed well not only on training data but also on unseen future orders.
+* Precision, recall, and macro F1-score were used instead of accuracy alone to evaluate both positive and negative reviews fairly. The macro F1-score was prioritised to ensure the minority negative class was properly evaluated.
 
-- Insights from Features
-  - Delivery reliability, delivery time, price, and order size emerged as the strongest predictors of customer satisfaction.
-  - Faster and more reliable delivery strongly correlated with positive reviews.
-  - Higher prices and late deliveries significantly increased the likelihood of negative reviews.
+#### Key Insight
+Customer reviews are most strongly influenced by delivery reliability, delivery speed, pricing, and order size. When delivery is delayed or unreliable, negative reviews become far more likely.
 
- 
-Outcome:
-  - Models achieved ~80% accuracy and F1-score on unseen test data.
-  - Predictive capability enables Nile to flag orders at risk of negative feedback before reviews are submitted.
-  - Business teams can use the insights to prioritise improvements in logistics, pricing strategy, and product quality.
-
-
-Business Impact:
-  - Anticipating reviews allows customer support to intervene early, reducing complaint volumes.
-  - Feature importance analysis provides clear evidence for investing in delivery performance and competitive pricing.
-  - Predictive analytics can be scaled to other business areas, such as fraud detection or personalised recommendations, maximising long-term ROI from the data platform.
-
+#### Business Value
+If deployed, this solution could help the platform:
+  - Increase the volume of positive online reviews
+  - Improve customer trust and conversion
+  - Use marketing incentives more effectively
+  - Support data-driven operations and delivery improvements
+    
+#### Limitations
+* The model relies on historical behaviour, which may not fully reflect future customer trends.
+* Data imbalance leads to weaker performance in predicting negative reviews.
+* Some features (average product/seller/category score) introduced data leakage risk and were later removed for realistic deployment.
+* One review is recorded per order, even when multiple products are purchased, which creates ambiguity about which product influenced the rating.
+* Binary classification may oversimplify how different customers interpret star ratings.
