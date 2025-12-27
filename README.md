@@ -19,6 +19,11 @@ The analysis was performed on a comprehensive dataset of 107,258 records, merged
 #### 🤖 Modeling & Evaluation
 I evaluated multiple Gradient Boosting frameworks to handle the non-linear relationships and class imbalance within the data
 
+| Model | Macro Precision (Test) | Macro Recall (Test) | Macro F1-Score (Test) |
+| :--- | :---: | :---: | :---: |
+| **GBDT** | 0.824 | 0.749 | 0.776 |
+| **XGBoost (Tuned)** | 0.804 | 0.748 | 0.769 |
+
 Performance Insight: The models achieved a 94-95% accuracy rate in predicting positive reviews. Hyperparameter tuning was utilized to ensure the models generalized well to unseen data and avoided overfitting
 
 #### 💡 Key Business Insights
